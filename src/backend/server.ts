@@ -5,11 +5,14 @@ import helmet from 'helmet'
 import fs from 'fs'
 import workoutRouter from './routes/workoutRoutes'
 import mongoose, { ConnectOptions } from 'mongoose'
+import cors from 'cors'
 require('dotenv').config()
 const MONGO_URI: string = process.env.WORKOUT_MONGO_ATLAS_CONNECTION_STRING
 
 // create app
 const app: Application = express()
+
+app.use(cors())
 
 // Apply security headers
 app.use(helmet())
@@ -25,14 +28,14 @@ app.use(morgan('combined', {
 // connect to db
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true } as ConnectOptions).then(() => {
     console.log('Connected to MongoDB!')
-    // listen on port 3000
+    // listen on port
     app.listen(process.env.PORT, () => {
         console.log(`listening on port ${process.env.PORT}`)
     })
-}).catch((err:any) => { console.log(err) })
+}).catch((err: any) => { console.log(err) })
 
 // this takes all the URL encoded data and passes that into an object (body) that you can use on the request object
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }))
 
 // access JSON on the response (res).body property
 app.use(express.json())
